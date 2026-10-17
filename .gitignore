@@ -1,0 +1,21 @@
+# Node Dependencies (ignores in root, frontend, and backend)
+node_modules/
+**/node_modules/
+
+# Environment Variables
+.env
+.env.local
+.env*.local
+**/.env
+
+# Next.js & Build Outputs
+.next/
+dist/
+build/
+out/
+
+# Logs & OS Files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
