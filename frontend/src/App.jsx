@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+// src/App.jsx
+import React, { useState, useEffect, useCallback } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import MainLayout from "./components/layout/MainLayout";
 import AuthLayout from "./components/layout/AuthLayout";
@@ -39,6 +40,11 @@ export default function App() {
   }, []);
 
   const Page = () => {
+    if (route.startsWith("/business/")) {
+      const businessId = route.split("/").pop();
+      return <BusinessDetail id={businessId} />;
+    }
+
     switch (route) {
       case "/":
         return <Home />;
@@ -48,8 +54,6 @@ export default function App() {
         return <Signup />;
       case "/browse":
         return <Browse />;
-      case "/business/:id":
-        return <BusinessDetail id={route.split("/").pop()} />;
       case "/book":
         return <Book />;
       case "/my-bookings":
@@ -63,15 +67,10 @@ export default function App() {
       case "/owner-dashboard":
         return <OwnerDashboard />;
       default:
-        // Support hash routes or fallback
-        if (route.startsWith("/business/")) {
-          return <BusinessDetail id={route.split("/").pop()} />;
-        }
         return <Home />;
     }
   };
 
-  // Only pure login/signup pages are wrapped in standalone AuthLayout
   const isAuthRoute = route === "/login" || route === "/signup";
 
   return (

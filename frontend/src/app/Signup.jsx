@@ -419,7 +419,7 @@ export default function Signup() {
       {/* Right Column: Statement & Value (Same Unified Card, Concise) */}
       <div
         style={{
-          background: "linear-gradient(145deg, #07111E 0%, #0C1B2A 100%)",
+          background: "linear-gradient(145deg, var(--navy-darkest) 0%, var(--navy) 100%)",
           padding: "2.25rem 2rem",
           color: "#FFFFFF",
           display: "flex",

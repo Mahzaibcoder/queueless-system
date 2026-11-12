@@ -1,4 +1,13 @@
 import { useState } from "react";
+import {
+  ShieldCheckIcon,
+  DeviceMobileIcon,
+  ChartTrendIcon,
+  DocumentTextIcon,
+  GlobeOutlineIcon,
+  SearchIcon,
+  CheckCircleIcon,
+} from "../components/common/Icons";
 import "./../styles/components.css";
 
 export default function Home() {
@@ -55,8 +64,11 @@ export default function Home() {
               </a>
             </div>
 
-            {/* Quality Feature Badge (Clean, icon-free look) */}
+            {/* Quality Feature Badge (matching photo with teal icon) */}
             <div className="hero-feature-badge">
+              <div className="hero-feature-icon">
+                <ShieldCheckIcon size={20} style={{ color: "var(--teal)" }} />
+              </div>
               <div className="hero-feature-text">
                 <h4>Quality with purpose</h4>
                 <p>Clear standards. Meaningful punctuality.</p>
@@ -67,50 +79,81 @@ export default function Home() {
           {/* Right Column: Framework Preview Card */}
           <div className="hero-card-wrapper">
             <div className="hero-floating-badge-top">
-              <span>Verified open slots</span>
+              <ShieldCheckIcon size={16} style={{ color: "var(--teal)" }} />
+              <div>
+                <strong>Quality first</strong>
+                <span style={{ display: "block", fontSize: "0.68rem", color: "var(--text-muted)", fontWeight: 500 }}>
+                  Standardized schedules
+                </span>
+              </div>
             </div>
 
             <div className="hero-preview-card">
               <div className="hero-card-header">
                 <span className="card-tag-framework">
+                  <CheckCircleIcon size={13} style={{ color: "var(--teal-dark)" }} />
                   Framework
                 </span>
               </div>
 
-              <h3 className="hero-card-title">Era of continuous improvement.</h3>
+              <h3 className="hero-card-title">
+                Era of <br />
+                <span style={{ color: "var(--teal)" }}>continuous improvement.</span>
+              </h3>
 
-              {/* Graphic Chart */}
+              {/* Graphic Chart with Axis Markers */}
               <div className="chart-container">
-                <div className="chart-bars">
-                  <div className="chart-bar-group">
-                    <div className="chart-bar" style={{ height: "35%" }} />
-                    <span className="chart-label">Morning</span>
+                <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-end" }}>
+                  {/* Y-Axis percentages */}
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "140px", paddingBottom: "0.5rem", fontSize: "0.68rem", color: "var(--text-light)", fontWeight: 600 }}>
+                    <span>100</span>
+                    <span>75</span>
+                    <span>50</span>
+                    <span>25</span>
+                    <span>0</span>
                   </div>
-                  <div className="chart-bar-group">
-                    <div className="chart-bar" style={{ height: "65%" }} />
-                    <span className="chart-label">Noon</span>
-                  </div>
-                  <div className="chart-bar-group">
-                    <div className="chart-bar" style={{ height: "95%" }} />
-                    <span className="chart-label">Peak</span>
-                  </div>
-                  <div className="chart-bar-group">
-                    <div className="chart-bar" style={{ height: "80%" }} />
-                    <span className="chart-label">Evening</span>
-                  </div>
-                  <div className="chart-bar-group">
-                    <div className="chart-bar" style={{ height: "100%" }} />
-                    <span className="chart-label">Standard</span>
+
+                  <div className="chart-bars" style={{ flex: 1 }}>
+                    <div className="chart-bar-group">
+                      <div className="chart-bar" style={{ height: "35%" }} />
+                      <span className="chart-label">Morning</span>
+                    </div>
+                    <div className="chart-bar-group">
+                      <div className="chart-bar" style={{ height: "65%" }} />
+                      <span className="chart-label">Noon</span>
+                    </div>
+                    <div className="chart-bar-group">
+                      <div className="chart-bar" style={{ height: "95%" }} />
+                      <span className="chart-label">Peak</span>
+                    </div>
+                    <div className="chart-bar-group">
+                      <div className="chart-bar" style={{ height: "80%" }} />
+                      <span className="chart-label">Evening</span>
+                    </div>
+                    <div className="chart-bar-group">
+                      <div className="chart-bar" style={{ height: "100%" }} />
+                      <span className="chart-label">Standard</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div className="card-status-badge">
+                <ShieldCheckIcon size={14} style={{ color: "var(--teal)" }} />
                 <span>Consistent standard progress</span>
               </div>
             </div>
 
-
+            {/* Bottom floating badge matching photo */}
+            <div className="hero-floating-badge-bottom">
+              <div className="floating-badge-icon">
+                <ChartTrendIcon size={18} style={{ color: "var(--teal)" }} />
+              </div>
+              <div className="floating-badge-text">
+                <h5>Keeps improving</h5>
+                <p>Progress that matters</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -170,6 +213,9 @@ export default function Home() {
             {/* Card 1 */}
             <div className="approach-card">
               <div className="approach-card-top">
+                <div className="approach-icon-box">
+                  <ShieldCheckIcon size={24} style={{ color: "var(--teal)" }} />
+                </div>
                 <span className="approach-card-num">01</span>
               </div>
               <h3>Quality assurance</h3>
@@ -186,9 +232,12 @@ export default function Home() {
             {/* Card 2 */}
             <div className="approach-card">
               <div className="approach-card-top">
+                <div className="approach-icon-box">
+                  <DeviceMobileIcon size={24} style={{ color: "var(--teal)" }} />
+                </div>
                 <span className="approach-card-num">02</span>
               </div>
-              <h3>Operational excellence</h3>
+              <h3>Academic excellence</h3>
               <p>
                 Supporting service businesses as they strengthen appointment throughput,
                 reduce no-shows, and improve customer satisfaction.
@@ -202,6 +251,9 @@ export default function Home() {
             {/* Card 3 */}
             <div className="approach-card">
               <div className="approach-card-top">
+                <div className="approach-icon-box">
+                  <ChartTrendIcon size={24} style={{ color: "var(--teal)" }} />
+                </div>
                 <span className="approach-card-num">03</span>
               </div>
               <h3>Continuous improvement</h3>
@@ -242,8 +294,8 @@ export default function Home() {
             <div className="dark-step-item">
               <span className="dark-step-num">01</span>
               <div className="dark-step-content">
-                <h4>Explore available businesses</h4>
-                <p>Understand service criteria, pricing, reviews, and verified availability.</p>
+                <h4>Explore the framework</h4>
+                <p>Understand accreditation criteria, standards, and the review process.</p>
               </div>
               <a href="/browse" className="dark-step-btn" aria-label="Explore step 1">&rarr;</a>
             </div>
@@ -251,8 +303,8 @@ export default function Home() {
             <div className="dark-step-item">
               <span className="dark-step-num">02</span>
               <div className="dark-step-content">
-                <h4>Prepare your appointment</h4>
-                <p>Select preferred service options, staff member, and optimal open time slot.</p>
+                <h4>Prepare your program</h4>
+                <p>Organize program evidence and evaluate learning outcomes against the criteria.</p>
               </div>
               <a href="/browse" className="dark-step-btn" aria-label="Explore step 2">&rarr;</a>
             </div>
@@ -261,7 +313,7 @@ export default function Home() {
               <span className="dark-step-num">03</span>
               <div className="dark-step-content">
                 <h4>Track progress</h4>
-                <p>Use a clear process to follow real-time alerts, queue status, and on-time notifications.</p>
+                <p>Use a clear process to follow reviews, updates, and quality improvement actions.</p>
               </div>
               <a href="/browse" className="dark-step-btn" aria-label="Explore step 3">&rarr;</a>
             </div>
@@ -286,10 +338,11 @@ export default function Home() {
 
           <div className="resource-search-wrapper">
             <form onSubmit={handleSearchSubmit} className="resource-search-bar">
+              <SearchIcon size={18} className="resource-search-icon" />
               <input
                 type="text"
                 className="resource-search-input"
-                placeholder="Search standards, guidelines, and services..."
+                placeholder="Search standards, guidelines, and resources..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -299,9 +352,12 @@ export default function Home() {
 
           <div className="resources-cards-grid">
             <div className="resource-card">
+              <div className="resource-card-icon">
+                <DeviceMobileIcon size={22} style={{ color: "var(--teal)" }} />
+              </div>
               <span className="resource-card-category">Guidance</span>
               <h3>Accreditation framework</h3>
-              <p>Get familiar with the principles and criteria that guide program quality and zero-wait appointment standards.</p>
+              <p>Get familiar with the principles and criteria that guide program quality.</p>
               <a href="/browse" className="resource-card-link">
                 <span>Explore framework</span>
                 <span className="arrow">&rarr;</span>
@@ -309,9 +365,12 @@ export default function Home() {
             </div>
 
             <div className="resource-card">
+              <div className="resource-card-icon">
+                <DocumentTextIcon size={22} style={{ color: "var(--teal)" }} />
+              </div>
               <span className="resource-card-category">Preparation</span>
               <h3>Program documentation</h3>
-              <p>Understand how evidence and service scheduling documentation support the seamless review and booking process.</p>
+              <p>Understand how evidence and documentation support the review process.</p>
               <a href="/browse" className="resource-card-link">
                 <span>View guidance</span>
                 <span className="arrow">&rarr;</span>
@@ -319,9 +378,12 @@ export default function Home() {
             </div>
 
             <div className="resource-card">
+              <div className="resource-card-icon">
+                <GlobeOutlineIcon size={22} style={{ color: "var(--teal)" }} />
+              </div>
               <span className="resource-card-category">Information</span>
               <h3>Portal announcements</h3>
-              <p>Stay connected with relevant updates, new partner businesses, and technical announcements for institutions and users.</p>
+              <p>Stay connected with relevant updates and information for institutions.</p>
               <a href="/browse" className="resource-card-link">
                 <span>See updates</span>
                 <span className="arrow">&rarr;</span>
@@ -341,17 +403,20 @@ export default function Home() {
               <span className="teal-text">comes next.</span>
             </h2>
             <p className="connected-desc">
-              Receive portal announcements and important scheduling updates as they become available.
+              Receive portal announcements and important information as it becomes available.
             </p>
           </div>
 
           <div className="newsletter-card">
+            <div className="newsletter-icon">
+              <DocumentTextIcon size={22} style={{ color: "var(--teal)" }} />
+            </div>
             <h3>Get portal updates</h3>
             <p>Enter your email to try the announcement sign-up experience.</p>
 
             {newsletterSuccess ? (
-              <div style={{ padding: "0.85rem 1rem", background: "var(--teal-bg)", color: "var(--teal-dark)", borderRadius: "10px", fontWeight: "600", fontSize: "0.9rem", marginBottom: "1rem" }}>
-                Signed up — you'll receive portal announcements.
+              <div style={{ padding: "0.85rem 1rem", background: "var(--teal-bg)", color: "var(--teal-dark)", borderRadius: "10px", fontWeight: "700", fontSize: "0.9rem", marginBottom: "1rem", border: "1px solid var(--teal-border)" }}>
+                Signed up &mdash; you'll receive portal announcements.
               </div>
             ) : (
               <form onSubmit={handleNewsletterSubmit} className="newsletter-form">

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { serviceService } from "../services/api";
+import { serviceService, businessService } from "../services/api";
 import { ServiceIcon, TrashIcon, EditIcon } from "../components/common/Icons";
 import "../styles/components.css";
 
 export default function ManageServices() {
+  const [businesses, setBusinesses] = useState([]);
+  const [selectedBusinessId, setSelectedBusinessId] = useState("");
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,13 +17,23 @@ export default function ManageServices() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    loadServices();
+    loadInitialData();
   }, []);
 
-  const loadServices = async () => {
+  useEffect(() => {
+    if (selectedBusinessId) {
+      loadServices(selectedBusinessId);
+    }
+  }, [selectedBusinessId]);
+
+  const loadInitialData = async () => {
     try {
-      const { data } = await serviceService.getByBusiness("b1");
-      setServices(data || []);
+      const bizRes = await businessService.getMyBusinesses();
+      const list = bizRes.data || [];
+      setBusinesses(list);
+      if (list.length > 0) {
+        setSelectedBusinessId(list[0].id);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -29,8 +41,21 @@ export default function ManageServices() {
     }
   };
 
+  const loadServices = async (bizId) => {
+    try {
+      const { data } = await serviceService.getByBusiness(bizId);
+      setServices(data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleAddService = async (e) => {
     e.preventDefault();
+    if (!selectedBusinessId) {
+      alert("Please select or create a business first.");
+      return;
+    }
     if (!name || !price) {
       alert("Please enter a service name and price.");
       return;
@@ -39,18 +64,23 @@ export default function ManageServices() {
     setSaving(true);
     try {
       const newSvc = {
-        businessId: "b1",
+        businessId: selectedBusinessId,
+        business: selectedBusinessId,
         name,
         duration: parseInt(duration, 10),
         price: parseFloat(price),
         description,
       };
-      const { data } = await serviceService.create(newSvc);
-      setServices([...services, data]);
-      setName("");
-      setPrice("");
-      setDescription("");
-      alert("Service added successfully!");
+      const res = await serviceService.create(newSvc);
+      if (res.error) {
+        alert("Failed to add service: " + res.error);
+      } else {
+        setServices([...services, res.data]);
+        setName("");
+        setPrice("");
+        setDescription("");
+        alert("Service added successfully!");
+      }
     } catch (err) {
       alert("Failed to add service. Please try again.");
     } finally {
@@ -58,17 +88,31 @@ export default function ManageServices() {
     }
   };
 
+  const handleDeleteService = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this service?")) return;
+    try {
+      const res = await serviceService.remove(id);
+      if (res.error) {
+        alert("Failed to delete service: " + res.error);
+      } else {
+        setServices(services.filter((s) => s.id !== id));
+      }
+    } catch (err) {
+      alert("Error deleting service");
+    }
+  };
+
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh", background: "var(--bg)" }}>
         <div className="loading-spinner" />
       </div>
     );
   }
 
   return (
-    <section style={{ padding: "2.5rem 5vw 4rem", background: "var(--bg)", minHeight: "85vh", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
-      <div className="container" style={{ maxWidth: "1150px", margin: "0 auto" }}>
+    <section style={{ padding: "2.5rem clamp(1.5rem, 4vw, 3.5rem) 4rem", background: "var(--bg)", minHeight: "85vh" }}>
+      <div className="container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
         
         {/* Navigation Link */}
         <div style={{ marginBottom: "1rem" }}>
@@ -77,47 +121,76 @@ export default function ManageServices() {
           </a>
         </div>
 
-        {/* SECTION 1: Blue Header Banner */}
+        {/* Deep Navy Header Banner */}
         <div
           style={{
-            background: "#0C1B2A",
+            background: "var(--navy-darkest)",
             color: "#FFFFFF",
             border: "1px solid rgba(255, 255, 255, 0.1)",
-            borderRadius: "14px",
-            padding: "1.75rem 2rem",
+            borderRadius: "16px",
+            padding: "1.75rem 2.25rem",
             marginBottom: "2rem",
-            boxShadow: "0 4px 12px rgba(12, 27, 42, 0.1)",
+            boxShadow: "0 4px 14px rgba(15, 32, 56, 0.12)",
             display: "flex",
-            justify: "space-between",
+            justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
+            gap: "1rem",
           }}
         >
           <div>
+            <div className="section-kicker section-kicker-light" style={{ marginBottom: '0.4rem' }}>Catalog Management</div>
             <h1 style={{ fontSize: "2rem", fontWeight: 800, margin: "0 0 0.25rem", letterSpacing: "-0.5px" }}>
-              Service Catalog Management
+              Service Catalog
             </h1>
-            <p style={{ color: "var(--text-light)", fontSize: "0.95rem", margin: 0 }}>
+            <p style={{ color: "#94A3B8", fontSize: "0.95rem", margin: 0 }}>
               Add new services or manage existing appointment offerings for your customers.
             </p>
           </div>
-          <span style={{ padding: "0.35rem 0.9rem", borderRadius: "9999px", background: "rgba(45, 212, 191, 0.15)", color: "var(--teal-light)", fontSize: "0.82rem", fontWeight: 800, border: "1px solid rgba(45, 212, 191, 0.3)" }}>
-            {services.length} Active Services
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+            {businesses.length > 1 && (
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span style={{ fontSize: "0.85rem", color: "#94A3B8", fontWeight: 600 }}>Business:</span>
+                <select
+                  value={selectedBusinessId}
+                  onChange={(e) => setSelectedBusinessId(e.target.value)}
+                  style={{
+                    background: "rgba(255, 255, 255, 0.15)",
+                    color: "#FFFFFF",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    borderRadius: "8px",
+                    padding: "0.35rem 0.75rem",
+                    fontSize: "0.85rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  {businesses.map((b) => (
+                    <option key={b.id} value={b.id} style={{ background: "var(--navy-darkest)", color: "#FFFFFF" }}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <span style={{ padding: "0.35rem 0.9rem", borderRadius: "9999px", background: "rgba(45, 212, 191, 0.15)", color: "var(--teal-light)", fontSize: "0.82rem", fontWeight: 800, border: "1px solid rgba(45, 212, 191, 0.3)" }}>
+              {services.length} Active Services
+            </span>
+          </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: "2rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "2rem" }}>
           
-          {/* SECTION 2: Active Services List Area */}
+          {/* Active Services List Area */}
           <div
             style={{
               background: "#FFFFFF",
               border: "1.5px solid var(--border)",
-              borderRadius: "14px",
+              borderRadius: "16px",
               padding: "1.75rem",
-              boxShadow: "0 4px 12px rgba(12, 27, 42, 0.03)",
+              boxShadow: "var(--shadow-sm)",
             }}
           >
-            <h2 style={{ fontSize: "1.25rem", color: "#0C1B2A", fontWeight: 800, margin: "0 0 1.25rem", paddingBottom: "0.75rem", borderBottom: "1px solid var(--border-light)" }}>
+            <h2 style={{ fontSize: "1.25rem", color: "var(--navy)", fontWeight: 800, margin: "0 0 1.25rem", paddingBottom: "0.75rem", borderBottom: "1px solid var(--border-light)" }}>
               Existing Services ({services.length})
             </h2>
 
@@ -128,34 +201,50 @@ export default function ManageServices() {
                     key={svc.id}
                     style={{
                       border: "1px solid var(--border)",
-                      borderRadius: "10px",
+                      borderRadius: "12px",
                       padding: "1.25rem",
                       background: "var(--surface)",
                       display: "flex",
-                      justify: "space-between",
+                      justifyContent: "space-between",
                       alignItems: "center",
                       gap: "1rem",
+                      transition: "var(--transition)",
                     }}
                   >
                     <div>
-                      <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0C1B2A", margin: "0 0 0.25rem" }}>
+                      <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--navy)", margin: "0 0 0.25rem" }}>
                         {svc.name}
                       </h3>
                       <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", margin: "0 0 0.5rem" }}>
                         {svc.description || "No description provided."}
                       </p>
-                      <div style={{ fontSize: "0.82rem", color: "var(--text-dark)", fontWeight: 700 }}>
+                      <div style={{ fontSize: "0.82rem", color: "var(--navy)", fontWeight: 700 }}>
                         ⏱ {svc.duration} Minutes Duration
                       </div>
                     </div>
 
-                    <div style={{ textAlign: "right", minWidth: "100px" }}>
-                      <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--teal-dark)", marginBottom: "0.5rem" }}>
+                    <div style={{ textAlign: "right", minWidth: "100px", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.5rem" }}>
+                      <div style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--teal-dark)" }}>
                         ${svc.price}
                       </div>
-                      <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "block" }}>
-                        ID: {svc.id}
-                      </span>
+                      <button
+                        onClick={() => handleDeleteService(svc.id)}
+                        style={{
+                          background: "var(--danger-bg)",
+                          color: "var(--danger)",
+                          border: "1px solid rgba(239, 68, 68, 0.25)",
+                          borderRadius: "6px",
+                          padding: "0.25rem 0.5rem",
+                          cursor: "pointer",
+                          fontSize: "0.78rem",
+                          fontWeight: 700,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <TrashIcon size={13} /> Delete
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -167,81 +256,54 @@ export default function ManageServices() {
             )}
           </div>
 
-          {/* SECTION 3: Create Service Form */}
+          {/* Create Service Form */}
           <div
             style={{
               background: "#FFFFFF",
               border: "1.5px solid var(--border)",
-              borderRadius: "14px",
+              borderRadius: "16px",
               padding: "1.75rem",
-              boxShadow: "0 4px 12px rgba(12, 27, 42, 0.03)",
+              boxShadow: "var(--shadow-sm)",
               height: "fit-content",
             }}
           >
-            <h2 style={{ fontSize: "1.2rem", color: "#0C1B2A", fontWeight: 800, margin: "0 0 1.25rem", paddingBottom: "0.75rem", borderBottom: "1px solid var(--border-light)" }}>
+            <h2 style={{ fontSize: "1.2rem", color: "var(--navy)", fontWeight: 800, margin: "0 0 1.25rem", paddingBottom: "0.75rem", borderBottom: "1px solid var(--border-light)" }}>
               Add New Service
             </h2>
 
             <form onSubmit={handleAddService} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#0C1B2A", marginBottom: "0.35rem" }}>
-                  Service Name *
-                </label>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label className="label">Service Name *</label>
                 <input
                   type="text"
                   placeholder="e.g., Haircut & Style"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "0.6rem 0.85rem",
-                    border: "1px solid var(--border)",
-                    borderRadius: "8px",
-                    fontSize: "0.9rem",
-                    outline: "none",
-                  }}
+                  className="form-input"
                   required
                 />
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#0C1B2A", marginBottom: "0.35rem" }}>
-                    Price ($) *
-                  </label>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label className="label">Price ($) *</label>
                   <input
                     type="number"
                     placeholder="35"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "0.6rem 0.85rem",
-                      border: "1px solid var(--border)",
-                      borderRadius: "8px",
-                      fontSize: "0.9rem",
-                      outline: "none",
-                    }}
+                    className="form-input"
                     required
                   />
                 </div>
 
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#0C1B2A", marginBottom: "0.35rem" }}>
-                    Duration (Mins)
-                  </label>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label className="label">Duration (Mins)</label>
                   <select
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "0.6rem 0.85rem",
-                      border: "1px solid var(--border)",
-                      borderRadius: "8px",
-                      fontSize: "0.9rem",
-                      outline: "none",
-                      background: "#FFFFFF",
-                    }}
+                    className="form-input"
+                    style={{ background: "#F8FAFC" }}
                   >
                     <option value="15">15 Mins</option>
                     <option value="30">30 Mins</option>
@@ -252,39 +314,31 @@ export default function ManageServices() {
                 </div>
               </div>
 
-              <div>
-                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#0C1B2A", marginBottom: "0.35rem" }}>
-                  Description
-                </label>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label className="label">Description</label>
                 <textarea
                   rows="3"
                   placeholder="Brief description of what is included in this service..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "0.6rem 0.85rem",
-                    border: "1px solid var(--border)",
-                    borderRadius: "8px",
-                    fontSize: "0.9rem",
-                    outline: "none",
-                    resize: "vertical",
-                  }}
+                  className="form-input"
+                  style={{ resize: "vertical" }}
                 />
               </div>
 
               <button
                 type="submit"
-                className="btn-navy-pill"
+                className="btn-primary"
                 disabled={saving}
                 style={{
                   marginTop: "0.5rem",
-                  padding: "0.65rem",
+                  padding: "0.75rem",
                   justifyContent: "center",
-                  fontSize: "0.9rem",
+                  fontSize: "0.92rem",
+                  borderRadius: "9999px",
                 }}
               >
-                {saving ? "Saving..." : "Add Service Offer"}
+                {saving ? "Saving..." : "Add Service Offer \u2192"}
               </button>
             </form>
           </div>

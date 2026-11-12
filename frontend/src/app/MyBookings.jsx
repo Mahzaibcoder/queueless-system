@@ -5,17 +5,27 @@ import { CalendarIcon, TrashIcon, ArrowRightIcon, SearchIcon } from "../componen
 import "../styles/components.css";
 
 export default function MyBookings() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  // Fetch bookings once auth is ready and we have a valid user ID
   useEffect(() => {
-    bookingService.getByUser(user?.id || "u1").then(({ data }) => {
-      setBookings(data || []);
+    if (authLoading) return; // wait for auth context to finish loading
+    if (!user?.id) {
+      setBookings([]);
       setLoading(false);
-    });
-  }, [user]);
+      return;
+    }
+    bookingService
+      .getByUser(user.id)
+      .then(({ data }) => {
+        setBookings(data || []);
+      })
+      .catch((err) => console.error('Failed to load bookings', err))
+      .finally(() => setLoading(false));
+  }, [user, authLoading]);
 
   const handleCancel = async (id) => {
     const reason = window.prompt("Reason for cancellation (optional):");
@@ -31,7 +41,7 @@ export default function MyBookings() {
 
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh", background: "var(--bg)" }}>
         <div className="loading-spinner" />
       </div>
     );
@@ -53,28 +63,27 @@ export default function MyBookings() {
   return (
     <section
       style={{
-        padding: "3.5rem 5vw 4rem",
+        padding: "3.5rem clamp(1.5rem, 4vw, 3.5rem) 4rem",
         background: "var(--bg)",
         minHeight: "85vh",
-        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
-      <div className="container" style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        
-        {/* UNIFORM HEADER BANNER */}
+      <div className="container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Header Banner */}
         <div
           style={{
-            background: "#0C1B2A",
+            background: "var(--navy-darkest)",
             color: "#FFFFFF",
-            borderRadius: "14px",
+            borderRadius: "16px",
             padding: "2rem 2.5rem",
             marginBottom: "2.5rem",
-            boxShadow: "0 4px 12px rgba(12, 27, 42, 0.1)",
+            boxShadow: "0 4px 14px rgba(15, 32, 56, 0.12)",
             display: "flex",
-            justify: "space-between",
+            justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
             gap: "1.5rem",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
           {/* Left Side: Title & Subtitle */}
@@ -89,6 +98,7 @@ export default function MyBookings() {
                 fontSize: "0.75rem",
                 fontWeight: 800,
                 textTransform: "uppercase",
+                letterSpacing: "0.06em",
               }}
             >
               Customer Portal
@@ -96,14 +106,13 @@ export default function MyBookings() {
             <h1 style={{ fontSize: "2rem", fontWeight: 800, margin: "0.5rem 0 0.25rem", letterSpacing: "-0.5px" }}>
               My Bookings
             </h1>
-            <p style={{ color: "var(--text-light)", fontSize: "0.95rem", margin: 0 }}>
+            <p style={{ color: "#94A3B8", fontSize: "0.95rem", margin: 0 }}>
               Review your scheduled appointments and past booking history.
             </p>
           </div>
 
-          {/* Right Corner: Search and Book New Button Locked Together in One Line */}
+          {/* Right Corner: Search and Book New Button */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginLeft: "auto" }}>
-            
             {/* Search Input Box */}
             <div
               style={{
@@ -112,11 +121,11 @@ export default function MyBookings() {
                 background: "rgba(255, 255, 255, 0.08)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
                 borderRadius: "9999px",
-                padding: "0.5rem 0.9rem",
+                padding: "0.5rem 1rem",
                 gap: "0.5rem",
               }}
             >
-              <SearchIcon size={16} style={{ color: "var(--text-light)", flexShrink: 0 }} />
+              <SearchIcon size={16} style={{ color: "var(--teal-light)", flexShrink: 0 }} />
               <input
                 type="text"
                 placeholder="Search appointments..."
@@ -136,22 +145,18 @@ export default function MyBookings() {
             {/* Book New Button */}
             <a href="/browse" style={{ textDecoration: "none" }}>
               <button
+                className="btn-primary"
                 style={{
-                  background: "var(--teal)",
-                  color: "#FFFFFF",
-                  border: "none",
-                  borderRadius: "9999px",
-                  padding: "0.55rem 1.1rem",
+                  padding: "0.55rem 1.25rem",
                   fontSize: "0.88rem",
                   fontWeight: 800,
-                  cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "0.4rem",
+                  gap: "0.45rem",
                   whiteSpace: "nowrap",
                 }}
               >
-                <CalendarIcon size={16} /> Book New
+                <CalendarIcon size={15} /> Book New →
               </button>
             </a>
           </div>
@@ -159,13 +164,11 @@ export default function MyBookings() {
 
         {/* SECTION 2: Layout Content Grid */}
         <div style={{ display: "grid", gap: "2.5rem" }}>
-          
           {/* Upcoming Appointments Section */}
           <div>
-            <h3 style={{ color: "#0C1B2A", fontWeight: 800, fontSize: "1.25rem", marginBottom: "1rem", letterSpacing: "-0.2px" }}>
+            <h3 style={{ color: "var(--navy)", fontWeight: 800, fontSize: "1.25rem", marginBottom: "1rem", letterSpacing: "-0.2px" }}>
               Upcoming Appointments
             </h3>
-
             {filteredUpcoming.length > 0 ? (
               <div style={{ display: "grid", gap: "1rem" }}>
                 {filteredUpcoming.map((b) => (
@@ -177,22 +180,21 @@ export default function MyBookings() {
                       borderRadius: "14px",
                       padding: "1.5rem",
                       display: "flex",
-                      justify: "space-between",
+                      justifyContent: "space-between",
                       alignItems: "center",
                       flexWrap: "wrap",
                       gap: "1rem",
-                      boxShadow: "0 2px 8px rgba(12, 27, 42, 0.03)",
+                      boxShadow: "var(--shadow-sm)",
                     }}
                   >
                     <div>
-                      <h4 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#0C1B2A", margin: "0 0 0.3rem" }}>
+                      <h4 style={{ fontSize: "1.15rem", fontWeight: 800, color: "var(--navy)", margin: "0 0 0.3rem" }}>
                         {b.businessName || "Verified Business"}
                       </h4>
                       <p style={{ color: "var(--text-dark)", fontSize: "0.92rem", margin: 0 }}>
-                        <strong style={{ color: "#0C1B2A" }}>{b.serviceName}</strong> &bull; {new Date(b.date).toLocaleDateString()} at {b.time}
+                        <strong style={{ color: "var(--navy)" }}>{b.serviceName}</strong> • {new Date(b.date).toLocaleDateString()} at {b.time}
                       </p>
                     </div>
-
                     <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                       <span
                         style={{
@@ -202,12 +204,11 @@ export default function MyBookings() {
                           color: "var(--teal-dark)",
                           fontSize: "0.8rem",
                           fontWeight: 800,
-                          border: "1px solid rgba(45, 212, 191, 0.3)",
+                          border: "1px solid var(--teal-border)",
                         }}
                       >
                         Confirmed
                       </span>
-
                       <button
                         type="button"
                         onClick={() => handleCancel(b.id)}
@@ -219,43 +220,24 @@ export default function MyBookings() {
                           borderRadius: "9999px",
                           fontSize: "0.85rem",
                           fontWeight: 700,
-                          cursor: "pointer",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.35rem",
                         }}
                       >
-                        <TrashIcon size={14} /> Cancel
+                        Cancel
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  border: "1.5px solid var(--border)",
-                  borderRadius: "14px",
-                  padding: "3rem 2rem",
-                  textAlign: "center",
-                }}
-              >
-                <h4 style={{ color: "#0C1B2A", fontWeight: 800, fontSize: "1.1rem", marginBottom: "0.5rem" }}>No upcoming appointments</h4>
-                <p style={{ color: "var(--text-muted)", fontSize: "0.92rem", marginBottom: "1.25rem" }}>You don't have any active bookings scheduled right now.</p>
-                <a href="/browse" style={{ color: "var(--teal-dark)", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                  Browse businesses and book <ArrowRightIcon size={14} />
-                </a>
-              </div>
+              <p style={{ color: "var(--text-muted)" }}>No upcoming appointments.</p>
             )}
           </div>
 
-          {/* Past / Cancelled History Section */}
-          <div>
-            <h3 style={{ color: "#0C1B2A", fontWeight: 800, fontSize: "1.25rem", marginBottom: "1rem", letterSpacing: "-0.2px" }}>
-              Past / Cancelled History
+          {/* Past Appointments */}
+          <div style={{ marginTop: "2rem" }}>
+            <h3 style={{ color: "var(--navy)", fontWeight: 800, fontSize: "1.25rem", marginBottom: "1rem", letterSpacing: "-0.2px" }}>
+              Past Appointments
             </h3>
-
             {filteredPast.length > 0 ? (
               <div style={{ display: "grid", gap: "1rem" }}>
                 {filteredPast.map((b) => (
@@ -265,61 +247,30 @@ export default function MyBookings() {
                       background: "#FFFFFF",
                       border: "1.5px solid var(--border)",
                       borderRadius: "14px",
-                      padding: "1.25rem 1.5rem",
+                      padding: "1.5rem",
                       display: "flex",
-                      justify: "space-between",
+                      justifyContent: "space-between",
                       alignItems: "center",
-                      opacity: 0.85,
-                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.02)",
+                      flexWrap: "wrap",
+                      gap: "1rem",
+                      boxShadow: "var(--shadow-sm)",
                     }}
                   >
                     <div>
-                      <h4 style={{ fontSize: "1.05rem", fontWeight: 800, color: "#0C1B2A", margin: "0 0 0.2rem" }}>
+                      <h4 style={{ fontSize: "1.15rem", fontWeight: 800, color: "var(--navy)", margin: "0 0 0.3rem" }}>
                         {b.businessName || "Verified Business"}
                       </h4>
-                      <p style={{ color: "var(--text-muted)", fontSize: "0.88rem", margin: 0 }}>
-                        {b.serviceName} &bull; {new Date(b.date).toLocaleDateString()} at {b.time}
+                      <p style={{ color: "var(--text-dark)", fontSize: "0.92rem", margin: 0 }}>
+                        <strong style={{ color: "var(--navy)" }}>{b.serviceName}</strong> • {new Date(b.date).toLocaleDateString()} at {b.time}
                       </p>
-                      {b.cancelReason && (
-                        <p style={{ color: "var(--danger)", fontSize: "0.8rem", marginTop: "0.25rem", fontStyle: "italic" }}>
-                          Reason: {b.cancelReason}
-                        </p>
-                      )}
                     </div>
-
-                    <span
-                      style={{
-                        padding: "0.3rem 0.75rem",
-                        borderRadius: "9999px",
-                        background: "var(--danger-bg)",
-                        color: "var(--danger)",
-                        fontSize: "0.8rem",
-                        fontWeight: 800,
-                        border: "1px solid rgba(239, 68, 68, 0.2)",
-                      }}
-                    >
-                      {b.status === "cancelled" ? "Cancelled" : "Completed"}
-                    </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <div
-                style={{
-                  background: "#FFFFFF",
-                  border: "1.5px solid var(--border)",
-                  borderRadius: "14px",
-                  padding: "2rem",
-                  textAlign: "center",
-                  color: "var(--text-muted)",
-                  fontSize: "0.92rem",
-                }}
-              >
-                No past or cancelled appointments in your history.
-              </div>
+              <p style={{ color: "var(--text-muted)" }}>No past appointments.</p>
             )}
           </div>
-
         </div>
       </div>
     </section>

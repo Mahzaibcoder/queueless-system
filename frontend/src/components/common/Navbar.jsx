@@ -48,7 +48,7 @@ export default function Navbar() {
             <div className="brand-icon-box">Q</div>
             <div className="brand-text-group">
               <span className="brand-title">QueueLess</span>
-              <span className="brand-subtitle">Smart Appointment & Queue Framework</span>
+              <span className="brand-subtitle">Smart Appointment &amp; Queue Framework</span>
             </div>
           </Link>
 
@@ -86,10 +86,10 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <a href="/login" className="btn-portal" style={{ textDecoration: "none" }}>
+                <a href="/login" className="nav-login-link">
                   Log in
                 </a>
-                <a href="/browse" className="btn-portal" style={{ textDecoration: "none" }}>
+                <a href="/browse" className="btn-portal">
                   <span>Explore portal</span>
                   <span className="btn-portal-arrow">&rarr;</span>
                 </a>
@@ -146,7 +146,7 @@ export default function Navbar() {
                     style={{
                       textAlign: "center",
                       padding: "0.75rem",
-                      fontWeight: "600",
+                      fontWeight: "700",
                       color: "var(--navy)",
                     }}
                   >

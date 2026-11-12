@@ -1,12 +1,25 @@
 {
-  "name": "backend",
+  "name": "queueless-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "QueueLess appointment & reservation booking system - Backend API",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "seed": "node src/database/seeders/seed.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.24.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
 }

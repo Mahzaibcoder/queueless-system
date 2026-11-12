@@ -13,26 +13,29 @@ export default function BusinessCard({ business }) {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        maxWidth: "320px",
+        maxWidth: "340px",
         margin: "0 auto",
         width: "100%",
         background: "var(--surface)",
         border: "1px solid var(--border)",
-        borderRadius: "12px",
+        borderRadius: "16px",
         overflow: "hidden",
-        boxShadow: "0 2px 8px rgba(12, 27, 42, 0.04)",
-        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        boxShadow: "var(--shadow)",
+        transition: "var(--transition)",
       }}
     >
       <div
         className="business-card-image-wrapper"
-        style={{ height: "160px", position: "relative", overflow: "hidden" }}
+        style={{ height: "170px", position: "relative", overflow: "hidden" }}
       >
         <img
           src={business.image || defaultImage}
           alt={business.name}
           className="business-card-img"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          onError={(e) => {
+            e.target.src = defaultImage;
+          }}
         />
         <span
           className="business-category-tag"
@@ -40,7 +43,7 @@ export default function BusinessCard({ business }) {
             position: "absolute",
             top: "10px",
             right: "10px",
-            background: "rgba(12, 27, 42, 0.9)",
+            background: "rgba(15, 32, 56, 0.9)",
             color: "#FFFFFF",
             fontSize: "0.72rem",
             fontWeight: 800,
@@ -48,6 +51,7 @@ export default function BusinessCard({ business }) {
             borderRadius: "9999px",
             letterSpacing: "0.5px",
             textTransform: "uppercase",
+            backdropFilter: "blur(4px)",
           }}
         >
           {business.category || "Service"}
@@ -60,16 +64,16 @@ export default function BusinessCard({ business }) {
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          padding: "1.2rem",
+          padding: "1.35rem",
         }}
       >
         <h3 className="business-card-title" style={{ margin: 0, marginBottom: "0.4rem" }}>
           <a
             href={`/business/${business.id}`}
             style={{
-              color: "#0C1B2A",
+              color: "var(--navy)",
               fontWeight: 800,
-              fontSize: "1.1rem",
+              fontSize: "1.15rem",
               textDecoration: "none",
               letterSpacing: "-0.2px",
             }}
@@ -81,7 +85,7 @@ export default function BusinessCard({ business }) {
         <div
           style={{
             display: "flex",
-            justify: "space-between",
+            justifyContent: "space-between",
             alignItems: "center",
             fontSize: "0.85rem",
             color: "var(--text-muted)",
@@ -89,11 +93,11 @@ export default function BusinessCard({ business }) {
           }}
         >
           <span style={{ fontSize: "0.82rem", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
-            <BuildingIcon size={14} />
+            <BuildingIcon size={14} style={{ color: "var(--teal)" }} />
             {business.location || business.address || "Verified Location"}
           </span>
-          <span style={{ fontWeight: 800, color: "#0C1B2A", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-            <StarIcon size={14} style={{ color: "var(--teal-dark)" }} />
+          <span style={{ fontWeight: 800, color: "var(--navy)", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+            <StarIcon size={14} style={{ color: "var(--teal)" }} />
             {business.rating || "4.9"}
           </span>
         </div>
@@ -106,13 +110,17 @@ export default function BusinessCard({ business }) {
             borderTop: "1px solid var(--border-light)",
             display: "flex",
             alignItems: "center",
-            justify: "space-between",
+            justifyContent: "space-between",
+            background: "transparent",
+            paddingLeft: 0,
+            paddingRight: 0,
+            paddingBottom: 0,
           }}
         >
           <span
             style={{
-              color: "#000000",
-              fontWeight: 800,
+              color: "var(--navy)",
+              fontWeight: 700,
               fontSize: "0.8rem",
               display: "inline-flex",
               alignItems: "center",
@@ -120,13 +128,13 @@ export default function BusinessCard({ business }) {
             }}
           >
             <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--teal)" }} />
-            Live slots available
+            Live slots open
           </span>
 
           <a
             href={`/business/${business.id}`}
-            className="btn-navy-pill"
-            style={{ padding: "0.4rem 0.85rem", fontSize: "0.82rem", fontWeight: 700 }}
+            className="btn-primary"
+            style={{ padding: "0.45rem 1rem", fontSize: "0.82rem", fontWeight: 700, borderRadius: "9999px" }}
           >
             View &rarr;
           </a>

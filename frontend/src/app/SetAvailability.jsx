@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { availabilityService } from "../services/api";
+import { availabilityService, businessService } from "../services/api";
 import { CalendarIcon, CheckCircleIcon } from "../components/common/Icons";
 import "../styles/components.css";
 
@@ -14,6 +14,8 @@ const DAYS = [
 ];
 
 export default function SetAvailability() {
+  const [businesses, setBusinesses] = useState([]);
+  const [selectedBusinessId, setSelectedBusinessId] = useState("");
   const [schedule, setSchedule] = useState({
     1: { active: true, start: "09:00", end: "17:00" },
     2: { active: true, start: "09:00", end: "17:00" },
@@ -29,12 +31,33 @@ export default function SetAvailability() {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    loadAvailability();
+    loadInitialData();
   }, []);
 
-  const loadAvailability = async () => {
+  useEffect(() => {
+    if (selectedBusinessId) {
+      loadAvailability(selectedBusinessId);
+    }
+  }, [selectedBusinessId]);
+
+  const loadInitialData = async () => {
     try {
-      const { data } = await availabilityService.getByBusiness("b1");
+      const bizRes = await businessService.getMyBusinesses();
+      const list = bizRes.data || [];
+      setBusinesses(list);
+      if (list.length > 0) {
+        setSelectedBusinessId(list[0].id);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadAvailability = async (bizId) => {
+    try {
+      const { data } = await availabilityService.getByBusiness(bizId);
       if (data && data.length > 0) {
         const mapped = { ...schedule };
         data.forEach((slot) => {
@@ -48,8 +71,6 @@ export default function SetAvailability() {
       }
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -69,6 +90,10 @@ export default function SetAvailability() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedBusinessId) {
+      alert("Please select or create a business first.");
+      return;
+    }
     setSaving(true);
     setSavedSuccess(false);
 
@@ -82,7 +107,7 @@ export default function SetAvailability() {
         };
       });
 
-      await availabilityService.save("b1", payload);
+      await availabilityService.save(selectedBusinessId, payload);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 4000);
     } catch (err) {
@@ -94,7 +119,7 @@ export default function SetAvailability() {
 
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh", background: "var(--bg)" }}>
         <div className="loading-spinner" />
       </div>
     );
@@ -103,13 +128,12 @@ export default function SetAvailability() {
   return (
     <section
       style={{
-        padding: "2.5rem 5vw 4rem",
+        padding: "2.5rem clamp(1.5rem, 4vw, 3.5rem) 4rem",
         background: "var(--bg)",
         minHeight: "85vh",
-        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
-      <div className="container" style={{ maxWidth: "850px", margin: "0 auto" }}>
+      <div className="container" style={{ maxWidth: "880px", margin: "0 auto" }}>
         
         {/* Navigation Link */}
         <div style={{ marginBottom: "1rem" }}>
@@ -118,41 +142,71 @@ export default function SetAvailability() {
           </a>
         </div>
 
-        {/* SECTION 1: Deep Navy Banner Header */}
+        {/* Deep Navy Banner Header */}
         <div
           style={{
-            background: "#0C1B2A",
+            background: "var(--navy-darkest)",
             color: "#FFFFFF",
             border: "1px solid rgba(255, 255, 255, 0.1)",
-            borderRadius: "14px",
-            padding: "1.75rem 2rem",
+            borderRadius: "16px",
+            padding: "1.75rem 2.25rem",
             marginBottom: "2rem",
-            boxShadow: "0 4px 12px rgba(12, 27, 42, 0.1)",
+            boxShadow: "0 4px 14px rgba(15, 32, 56, 0.12)",
             display: "flex",
-            justify: "space-between",
+            justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
+            gap: "1rem",
           }}
         >
           <div>
-            <span
-              style={{
-                padding: "0.25rem 0.75rem",
-                borderRadius: "9999px",
-                background: "rgba(45, 212, 191, 0.15)",
-                color: "var(--teal-light)",
-                border: "1px solid rgba(45, 212, 191, 0.3)",
-                fontSize: "0.75rem",
-                fontWeight: 800,
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-              }}
-            >
-              Operating Hours
-            </span>
-            <h1 style={{ fontSize: "1.85rem", fontWeight: 800, margin: "0.5rem 0 0.25rem", letterSpacing: "-0.5px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.4rem" }}>
+              <span
+                style={{
+                  padding: "0.25rem 0.75rem",
+                  borderRadius: "9999px",
+                  background: "rgba(45, 212, 191, 0.15)",
+                  color: "var(--teal-light)",
+                  border: "1px solid rgba(45, 212, 191, 0.3)",
+                  fontSize: "0.75rem",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Operating Hours
+              </span>
+
+              {businesses.length > 1 && (
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                  <span style={{ fontSize: "0.8rem", color: "#94A3B8", fontWeight: 700 }}>Business:</span>
+                  <select
+                    value={selectedBusinessId}
+                    onChange={(e) => setSelectedBusinessId(e.target.value)}
+                    style={{
+                      background: "rgba(255, 255, 255, 0.18)",
+                      color: "#FFFFFF",
+                      border: "1px solid rgba(255, 255, 255, 0.3)",
+                      borderRadius: "8px",
+                      padding: "0.25rem 0.65rem",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {businesses.map((b) => (
+                      <option key={b.id} value={b.id} style={{ background: "var(--navy-darkest)", color: "#FFFFFF" }}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+            <h1 style={{ fontSize: "1.85rem", fontWeight: 800, margin: "0.25rem 0 0.25rem", letterSpacing: "-0.5px" }}>
               Set Weekly Availability
             </h1>
-            <p style={{ color: "var(--text-light)", fontSize: "0.92rem", margin: 0 }}>
+            <p style={{ color: "#94A3B8", fontSize: "0.92rem", margin: 0 }}>
               Define open booking hours for each day of the week. Unchecked days will show as closed.
             </p>
           </div>
@@ -165,7 +219,7 @@ export default function SetAvailability() {
               background: "rgba(255, 255, 255, 0.08)",
               display: "flex",
               alignItems: "center",
-              justify: "center",
+              justifyContent: "center",
               color: "var(--teal-light)",
             }}
           >
@@ -173,22 +227,22 @@ export default function SetAvailability() {
           </div>
         </div>
 
-        {/* SECTION 2: Form Container with High-Contrast Boundaries */}
+        {/* Form Container */}
         <div
           style={{
             background: "#FFFFFF",
             border: "1.5px solid var(--border)",
             borderRadius: "16px",
             padding: "2rem",
-            boxShadow: "0 4px 12px rgba(12, 27, 42, 0.03)",
+            boxShadow: "var(--shadow)",
           }}
         >
           {savedSuccess && (
             <div
               style={{
-                background: "#ECFDF5",
-                border: "1px solid rgba(16, 185, 129, 0.3)",
-                color: "#065F46",
+                background: "var(--teal-bg)",
+                border: "1px solid var(--teal-border)",
+                color: "var(--teal-dark)",
                 padding: "0.85rem 1.25rem",
                 borderRadius: "10px",
                 fontSize: "0.9rem",
@@ -217,7 +271,7 @@ export default function SetAvailability() {
                       background: item.active ? "var(--surface)" : "#FAFAFA",
                       display: "flex",
                       alignItems: "center",
-                      justify: "space-between",
+                      justifyContent: "space-between",
                       flexWrap: "wrap",
                       gap: "1rem",
                       transition: "var(--transition)",
@@ -233,14 +287,14 @@ export default function SetAvailability() {
                           width: "18px",
                           height: "18px",
                           cursor: "pointer",
-                          accentColor: "#0C1B2A",
+                          accentColor: "var(--navy)",
                         }}
                       />
                       <span
                         style={{
                           fontWeight: 800,
                           fontSize: "1rem",
-                          color: item.active ? "#0C1B2A" : "var(--text-muted)",
+                          color: item.active ? "var(--navy)" : "var(--text-muted)",
                         }}
                       >
                         {d.name}
@@ -262,7 +316,7 @@ export default function SetAvailability() {
                               borderRadius: "8px",
                               fontSize: "0.88rem",
                               fontWeight: 600,
-                              color: "#0C1B2A",
+                              color: "var(--navy)",
                               background: "#FFFFFF",
                               outline: "none",
                             }}
@@ -283,7 +337,7 @@ export default function SetAvailability() {
                               borderRadius: "8px",
                               fontSize: "0.88rem",
                               fontWeight: 600,
-                              color: "#0C1B2A",
+                              color: "var(--navy)",
                               background: "#FFFFFF",
                               outline: "none",
                             }}
@@ -310,40 +364,29 @@ export default function SetAvailability() {
               })}
             </div>
 
-            {/* High-Impact CTA Save Button (Matching Sign-Up Styling) */}
             <button
               type="submit"
               disabled={saving}
+              className="btn-primary"
               style={{
                 width: "100%",
                 padding: "0.9rem",
-                background: "#0C1B2A",
-                color: "#FFFFFF",
-                border: "none",
                 borderRadius: "9999px",
                 fontSize: "1rem",
                 fontWeight: 800,
                 letterSpacing: "0.3px",
                 cursor: saving ? "not-allowed" : "pointer",
-                boxShadow: "0 4px 14px rgba(12, 27, 42, 0.2)",
-                transition: "all 0.2s ease",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 gap: "0.5rem",
-              }}
-              onMouseOver={(e) => {
-                if (!saving) e.currentTarget.style.background = "#142A40";
-              }}
-              onMouseOut={(e) => {
-                if (!saving) e.currentTarget.style.background = "#0C1B2A";
               }}
             >
               {saving ? (
                 "Saving Schedule..."
               ) : (
                 <>
-                  <CheckCircleIcon size={18} /> Save Availability Schedule
+                  <CheckCircleIcon size={18} /> Save Availability Schedule &rarr;
                 </>
               )}
             </button>
