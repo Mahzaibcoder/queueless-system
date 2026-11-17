@@ -1,50 +1,60 @@
-/* QueueLess - Deep Navy & Mint Teal Theme (inspired by NCEAC portal design) */
+/* QueueLess - Warm Earthy Theme (inspired by sunnahtable.live) */
 :root {
-  --bg: #F8FAFC;
+  /* Backgrounds */
+  --bg: #FAF7F2;
   --surface: #FFFFFF;
-  --bg-light: #F1F5F9;
-  --bg-alt: #F0FDF9;
+  --bg-light: #F5F0E8;
+  --bg-alt: #FFF8F0;
+  --bg-cream: #FAF7F2;
 
-  --navy-darkest: #081422;
-  --navy: #0F2038;
-  --navy-dark: #081422;
-  --navy-surface: #142438;
-  --navy-border: #1E3A5F;
-  --navy-light: #1E293B;
+  /* Primary - Deep Olive/Forest Green */
+  --navy-darkest: #1C2B1A;
+  --navy: #2D4A2D;
+  --navy-dark: #1C2B1A;
+  --navy-surface: #243D24;
+  --navy-border: #3D5C3D;
+  --navy-light: #3A5C3A;
 
-  --teal: #00A389;
-  --teal-dark: #00826C;
-  --teal-light: #2DD4BF;
-  --teal-bg: #E6F7F4;
-  --teal-border: #A7F3D0;
+  /* Accent - Warm Amber/Gold */
+  --teal: #B5862A;
+  --teal-dark: #8C6520;
+  --teal-light: #D4A843;
+  --teal-bg: #FFF8E6;
+  --teal-border: #E8D5A0;
 
-  --primary: #0F2038;
-  --primary-dark: #081422;
-  --primary-light: #162A42;
-  --primary-bg: #E6F7F4;
+  /* Primary aliases */
+  --primary: #2D4A2D;
+  --primary-dark: #1C2B1A;
+  --primary-light: #3A5C3A;
+  --primary-bg: #FFF8E6;
 
-  --secondary: #526071;
-  --secondary-dark: #334155;
-  --accent: #00A389;
-  --accent-light: #2DD4BF;
+  --secondary: #6B6B5A;
+  --secondary-dark: #4A4A3A;
+  --accent: #B5862A;
+  --accent-light: #D4A843;
 
-  --text-dark: #0F2038;
-  --text-muted: #526071;
-  --text-light: #94A3B8;
+  /* Text */
+  --text-dark: #1C2B1A;
+  --text-muted: #6B6B5A;
+  --text-light: #9A9A88;
 
-  --border: #E2E8F0;
-  --border-light: #F1F5F9;
+  /* Borders */
+  --border: #E5DDD0;
+  --border-light: #F0EAE0;
 
-  --success: #10B981;
-  --success-bg: #ECFDF5;
-  --danger: #EF4444;
-  --danger-bg: #FEF2F2;
+  /* Status */
+  --success: #3D7A3D;
+  --success-bg: #F0F7F0;
+  --danger: #C0392B;
+  --danger-bg: #FEF5F4;
 
-  --shadow-sm: 0 1px 2px 0 rgba(15, 32, 56, 0.05);
-  --shadow: 0 4px 14px -2px rgba(15, 32, 56, 0.06), 0 2px 6px -1px rgba(15, 32, 56, 0.04);
-  --shadow-hover: 0 20px 30px -10px rgba(15, 32, 56, 0.09), 0 10px 15px -5px rgba(15, 32, 56, 0.04);
-  --shadow-card: 0 20px 40px -15px rgba(15, 32, 56, 0.08);
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(28, 43, 26, 0.06);
+  --shadow: 0 4px 14px -2px rgba(28, 43, 26, 0.08), 0 2px 6px -1px rgba(28, 43, 26, 0.05);
+  --shadow-hover: 0 20px 30px -10px rgba(28, 43, 26, 0.12), 0 10px 15px -5px rgba(28, 43, 26, 0.06);
+  --shadow-card: 0 20px 40px -15px rgba(28, 43, 26, 0.10);
 
+  /* Radius */
   --radius-pill: 9999px;
   --radius: 12px;
   --radius-sm: 8px;
@@ -79,7 +89,7 @@ a {
 }
 
 /* ==========================================================================
-   BUTTON SYSTEM (Matches photo buttons: Deep navy pill / Outline pill / Teal)
+   BUTTON SYSTEM
    ========================================================================== */
 .btn {
   display: inline-flex;
@@ -116,7 +126,7 @@ a {
   color: #FFFFFF !important;
   border: 1px solid var(--navy);
   border-radius: 9999px;
-  box-shadow: 0 4px 14px rgba(15, 32, 56, 0.18);
+  box-shadow: 0 4px 14px rgba(28, 43, 26, 0.20);
   cursor: pointer;
   transition: var(--transition);
   text-decoration: none;
@@ -127,17 +137,17 @@ a {
 
 .btn-primary:hover,
 .btn-navy-pill:hover {
-  background: #162A42;
-  border-color: #162A42;
+  background: var(--navy-dark);
+  border-color: var(--navy-dark);
   color: #FFFFFF !important;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(15, 32, 56, 0.25);
+  box-shadow: 0 6px 18px rgba(28, 43, 26, 0.28);
 }
 
 .btn-secondary {
   background: #FFFFFF;
   color: var(--navy) !important;
-  border: 1px solid #CBD5E1;
+  border: 1px solid var(--border);
   border-radius: 9999px;
 }
 
@@ -203,7 +213,7 @@ a {
 }
 
 /* ==========================================================================
-   FORM CONTROLS & AUTH CARD POLISH
+   FORM CONTROLS
    ========================================================================== */
 .form-input,
 .input,
@@ -223,7 +233,7 @@ textarea.input {
   font-size: 0.95rem !important;
   line-height: 1.5 !important;
   color: var(--text-dark) !important;
-  background: #F8FAFC !important;
+  background: #FDFAF5 !important;
   border: 1.5px solid var(--border) !important;
   border-radius: 12px !important;
   transition: all 0.2s ease !important;
@@ -244,7 +254,7 @@ select.input:focus,
 textarea.input:focus {
   background: #FFFFFF !important;
   border-color: var(--teal) !important;
-  box-shadow: 0 0 0 4px rgba(0, 163, 137, 0.12) !important;
+  box-shadow: 0 0 0 4px rgba(181, 134, 42, 0.14) !important;
 }
 
 .form-group {

@@ -281,7 +281,7 @@
 .hero-editorial {
   width: 100%;
   background: radial-gradient(ellipse at 85% 18%, rgba(204, 251, 241, 0.55) 0%, rgba(248, 250, 252, 0) 65%),
-              linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+              linear-gradient(180deg, #FAF7F2 0%, #FFFFFF 100%);
   padding: clamp(3.5rem, 6vw, 6rem) clamp(1.5rem, 4vw, 3.5rem);
   position: relative;
   overflow: hidden;
@@ -502,7 +502,7 @@
 
 /* Bar Chart Graphic */
 .chart-container {
-  background: #F8FAFC;
+  background: #FAF7F2;
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem 1.25rem 1rem;
@@ -533,7 +533,7 @@
   width: 100%;
   max-width: 38px;
   border-radius: 6px 6px 2px 2px;
-  background: linear-gradient(180deg, #14B8A6 0%, #00A389 100%);
+  background: linear-gradient(180deg, #D9A948 0%, #C49337 100%);
   transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 6px rgba(0, 163, 137, 0.25);
 }
@@ -1520,7 +1520,7 @@
   margin-top: auto;
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border);
-  background: #F8FAFC;
+  background: #FAF7F2;
 }
 
 /* Slot buttons */
@@ -1687,7 +1687,7 @@
 }
 
 .table th {
-  background: #F8FAFC;
+  background: #FAF7F2;
   font-weight: 800;
   color: var(--navy);
   font-size: 0.82rem;
@@ -1700,5 +1700,5 @@
 }
 
 .table tr:hover td {
-  background: #F8FAFC;
+  background: #FAF7F2;
 }

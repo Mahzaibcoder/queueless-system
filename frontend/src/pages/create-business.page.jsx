@@ -1,7 +1,5 @@
-// src/app/CreateBusiness.jsx
 import React, { useState, useEffect } from 'react';
 import { businessService } from '../services/api';
-import '../styles/components.css';
 
 export default function CreateBusiness() {
   const [formData, setFormData] = useState({
@@ -96,42 +94,29 @@ export default function CreateBusiness() {
     });
   };
 
-
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', padding: '3.5rem clamp(1.5rem, 4vw, 3.5rem)' }}>
-      <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+    <div className="w-full bg-[#FAF7F2] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-3xl mx-auto">
         {/* Navigation Breadcrumb */}
-        <div style={{ marginBottom: '1.25rem' }}>
-          <a href="/owner-dashboard" style={{ color: 'var(--text-muted)', fontSize: '0.88rem', textDecoration: 'none', fontWeight: 600 }}>
+        <div className="mb-4">
+          <a
+            href="/owner-dashboard"
+            className="text-xs sm:text-sm font-bold text-[#636D62] hover:text-[#16261A] transition-colors inline-flex items-center gap-1.5 no-underline"
+          >
             &larr; Back to Dashboard
           </a>
         </div>
 
-        {/* Deep Navy Banner Header */}
-        <div
-          style={{
-            background: 'var(--navy-darkest)',
-            color: '#FFFFFF',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '16px',
-            padding: '1.75rem 2rem',
-            marginBottom: '2rem',
-            boxShadow: '0 4px 14px rgba(15, 32, 56, 0.1)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '1rem',
-          }}
-        >
+        {/* Forest Green Banner Header */}
+        <div className="bg-[#182B1F] text-[#FAF7F2] border border-[#273D2E] rounded-3xl p-6 sm:p-8 mb-8 shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <div className="section-kicker section-kicker-light" style={{ marginBottom: '0.5rem' }}>
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#D9A948] bg-[#253E2C] border border-[#D9A948]/30 px-3 py-1 rounded-full mb-2">
               Portal Administration
             </div>
-            <h1 style={{ fontSize: '1.85rem', fontWeight: 800, margin: '0 0 0.35rem', letterSpacing: '-0.5px' }}>
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight my-1">
               {existingBusinessId ? 'Edit Business Profile' : 'Create Business Profile'}
             </h1>
-            <p style={{ color: '#94A3B8', fontSize: '0.92rem', margin: 0, lineHeight: 1.5 }}>
+            <p className="text-xs sm:text-sm text-[#B4C2AF] m-0 max-w-xl">
               {existingBusinessId
                 ? 'Update your existing business information, address, and imagery.'
                 : 'Register your institution or service business to publish verified live booking slots.'}
@@ -141,17 +126,7 @@ export default function CreateBusiness() {
             <button
               type="button"
               onClick={handleCreateNewInstead}
-              className="btn"
-              style={{
-                background: 'rgba(255, 255, 255, 0.15)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                borderRadius: '9999px',
-                padding: '0.5rem 1rem',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
+              className="px-4 py-2 rounded-full text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-all cursor-pointer whitespace-nowrap"
             >
               + Create New Business Instead
             </button>
@@ -159,14 +134,14 @@ export default function CreateBusiness() {
         </div>
 
         {error && (
-          <div style={{ padding: '12px 16px', background: 'var(--danger-bg)', color: 'var(--danger)', borderRadius: '10px', marginBottom: '20px', border: '1px solid rgba(239, 68, 68, 0.25)', fontSize: '0.88rem', fontWeight: 600 }}>
+          <div className="p-4 bg-[#FEF5F4] text-[#C0392B] border border-[#F5C2BE] rounded-2xl text-xs sm:text-sm font-bold mb-6">
             ! {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ background: '#FFFFFF', padding: '2.25rem', borderRadius: '16px', border: '1px solid var(--border)', boxShadow: 'var(--shadow)' }}>
-          <div className="form-group">
-            <label className="label">Business name *</label>
+        <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-10 rounded-3xl border border-[#E8E2D5] shadow-sm sunnah-card-hover flex flex-col gap-5">
+          <div>
+            <label className="block text-xs font-bold text-[#16261A] mb-1.5">Business name *</label>
             <input
               type="text"
               name="name"
@@ -174,12 +149,12 @@ export default function CreateBusiness() {
               placeholder="e.g. Luna Glow Salon"
               value={formData.name}
               onChange={handleChange}
-              className="form-input"
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E8E2D5] bg-[#FAF7F2] text-[#16261A] outline-none focus:border-[#C49337] transition-all"
             />
           </div>
 
-          <div className="form-group">
-            <label className="label">Description *</label>
+          <div>
+            <label className="block text-xs font-bold text-[#16261A] mb-1.5">Description *</label>
             <textarea
               name="description"
               required
@@ -187,19 +162,17 @@ export default function CreateBusiness() {
               placeholder="Brief description of what services you offer..."
               value={formData.description}
               onChange={handleChange}
-              className="form-input"
-              style={{ resize: 'vertical' }}
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E8E2D5] bg-[#FAF7F2] text-[#16261A] outline-none focus:border-[#C49337] transition-all resize-y"
             />
           </div>
 
-          <div className="form-group">
-            <label className="label">Category *</label>
+          <div>
+            <label className="block text-xs font-bold text-[#16261A] mb-1.5">Category *</label>
             <select
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="form-input"
-              style={{ background: '#F8FAFC' }}
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E8E2D5] bg-[#FAF7F2] text-[#16261A] outline-none focus:border-[#C49337] transition-all"
             >
               <option value="Beauty">Beauty</option>
               <option value="Healthcare">Healthcare</option>
@@ -209,8 +182,8 @@ export default function CreateBusiness() {
             </select>
           </div>
 
-          <div className="form-group">
-            <label className="label">Location / Address *</label>
+          <div>
+            <label className="block text-xs font-bold text-[#16261A] mb-1.5">Location / Address *</label>
             <input
               type="text"
               name="address"
@@ -218,12 +191,12 @@ export default function CreateBusiness() {
               placeholder="123 Main Street, Downtown"
               value={formData.address}
               onChange={handleChange}
-              className="form-input"
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E8E2D5] bg-[#FAF7F2] text-[#16261A] outline-none focus:border-[#C49337] transition-all"
             />
           </div>
 
-          <div className="form-group">
-            <label className="label">Phone *</label>
+          <div>
+            <label className="block text-xs font-bold text-[#16261A] mb-1.5">Phone *</label>
             <input
               type="text"
               name="phone"
@@ -231,30 +204,32 @@ export default function CreateBusiness() {
               placeholder="+1 (555) 000-0000"
               value={formData.phone}
               onChange={handleChange}
-              className="form-input"
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E8E2D5] bg-[#FAF7F2] text-[#16261A] outline-none focus:border-[#C49337] transition-all"
             />
           </div>
 
-          <div className="form-group" style={{ marginBottom: '2rem' }}>
-            <label className="label">Business Photo</label>
-            <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}>
+          <div>
+            <label className="block text-xs font-bold text-[#16261A] mb-2">Business Photo</label>
+            <div className="flex gap-4 mb-3">
+              <label className="flex items-center gap-2 text-xs font-bold text-[#16261A] cursor-pointer">
                 <input
                   type="radio"
                   name="imageType"
                   value="url"
                   checked={imageType === 'url'}
                   onChange={() => setImageType('url')}
+                  className="accent-[#203626]"
                 />
                 Image URL
               </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}>
+              <label className="flex items-center gap-2 text-xs font-bold text-[#16261A] cursor-pointer">
                 <input
                   type="radio"
                   name="imageType"
                   value="file"
                   checked={imageType === 'file'}
                   onChange={() => setImageType('file')}
+                  className="accent-[#203626]"
                 />
                 Upload from Computer
               </label>
@@ -267,42 +242,34 @@ export default function CreateBusiness() {
                 placeholder="https://images.unsplash.com/..."
                 value={formData.image.startsWith('data:') ? '' : formData.image}
                 onChange={handleChange}
-                className="form-input"
+                className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-[#E8E2D5] bg-[#FAF7F2] text-[#16261A] outline-none focus:border-[#C49337] transition-all"
               />
             ) : (
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                className="form-input"
-                style={{ padding: '8px' }}
+                className="w-full px-4 py-2 text-xs sm:text-sm rounded-xl border border-[#E8E2D5] bg-[#FAF7F2] text-[#16261A] outline-none focus:border-[#C49337]"
               />
             )}
 
             {formData.image && (
-              <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div className="mt-3 flex items-center gap-3">
                 <img
                   src={formData.image}
                   alt="Business Preview"
-                  style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--border)' }}
+                  className="w-20 h-14 object-cover rounded-xl border border-[#E8E2D5]"
                 />
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, image: '' })}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'var(--danger)',
-                    cursor: 'pointer',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                  }}
+                  className="text-xs font-bold text-[#C0392B] bg-transparent border-none cursor-pointer hover:underline"
                 >
                   Remove Image
                 </button>
               </div>
             )}
-            <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: '6px', fontSize: '0.78rem' }}>
+            <small className="block text-[0.72rem] text-[#636D62] mt-1.5">
               Choose whether to paste a direct image URL or upload an image file from your PC.
             </small>
           </div>
@@ -310,16 +277,7 @@ export default function CreateBusiness() {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary"
-            style={{
-              width: '100%',
-              padding: '12px 20px',
-              borderRadius: '9999px',
-              fontSize: '0.98rem',
-              fontWeight: 800,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.75 : 1,
-            }}
+            className="w-full py-3.5 px-6 rounded-full bg-[#203626] hover:bg-[#16261A] text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer border-none mt-2 disabled:opacity-50"
           >
             {loading
               ? 'Saving Profile...'

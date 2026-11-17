@@ -1,1 +1,2 @@
-export { useAuth } from "../context/AuthContext";
+export * from "./use-auth.hook";
+export { default } from "./use-auth.hook";

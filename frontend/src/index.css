@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+@theme {
+  --color-sunnah-bg: #FAF7F2;
+  --color-sunnah-cream: #FAF6EF;
+  --color-sunnah-parchment: #F2ECE0;
+  --color-sunnah-dark: #16261A;
+  --color-sunnah-forest: #203626;
+  --color-sunnah-forest-light: #2B4633;
+  --color-sunnah-gold: #C49337;
+  --color-sunnah-gold-light: #D9A948;
+  --color-sunnah-gold-dark: #A37422;
+  --color-sunnah-border: #E8E2D5;
+  --color-sunnah-border-light: #F2ECE1;
+  --color-sunnah-muted: #636D62;
+  --color-sunnah-text: #1A241C;
+}
+
+/* Card hover transitions */
+.sunnah-card-hover {
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sunnah-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px -10px rgba(22, 38, 26, 0.12);
+  border-color: rgba(196, 147, 55, 0.45);
+}

@@ -1,54 +1,54 @@
 export const theme = {
-  // Deep Navy & Mint Teal Theme (exact match to NCEAC editorial institutional design)
-  bg: "#F8FAFC",              // ultra-clean light slate background
+  // Warm Organic Sunnah Table Theme (inspired by sunnahtable.live)
+  bg: "#FAF7F2",              // warm cream background
   surface: "#FFFFFF",         // pure white cards
-  bgAlt: "#F0FDF9",           // subtle mint tint background
-  bgLight: "#F1F5F9",         // light slate
+  bgAlt: "#FAF6EF",           // subtle warm parchment tint background
+  bgLight: "#F2ECE0",         // warm linen
 
-  // Deep Navy brand
-  navyDarkest: "#081422",     // top banner, dark section, footer
-  navyDark: "#0F2038",        // primary dark, buttons, main titles
-  navySurface: "#142438",     // dark card surface
-  navyLight: "#1E293B",       // slate navy text
+  // Deep Forest Green
+  navyDarkest: "#16261A",     // dark banners, dark section, footer
+  navyDark: "#203626",        // primary dark, buttons, main titles
+  navySurface: "#273D2E",     // dark card surface
+  navyLight: "#3A5C43",       // forest green text
 
-  // Mint / Teal Accents
-  teal: "#00A389",            // signature vibrant teal accent from screenshot
-  tealDark: "#00826C",        // darker teal for readable text
-  tealLight: "#2DD4BF",       // bright teal for dark section
-  tealBg: "#E6F7F4",          // soft mint background for badges and icon boxes
-  tealBorder: "#A7F3D0",      // mint border
+  // Warm Amber / Gold Accents
+  teal: "#C49337",            // signature warm gold accent
+  tealDark: "#A37422",        // darker gold for readable text
+  tealLight: "#D9A948",       // bright warm gold for dark section
+  tealBg: "#FFF8E6",          // soft gold background for badges and icon boxes
+  tealBorder: "#E8D5A0",      // gold border
 
   // Primary mapping
-  primary: "#0F2038",
-  primaryDark: "#081422",
-  primaryLight: "#162A42",
-  primaryBg: "#E6F7F4",
+  primary: "#203626",
+  primaryDark: "#16261A",
+  primaryLight: "#2B4633",
+  primaryBg: "#FFF8E6",
 
-  secondary: "#526071",
-  secondaryDark: "#334155",
-  accent: "#00A389",
-  accentLight: "#2DD4BF",
+  secondary: "#636D62",
+  secondaryDark: "#454E44",
+  accent: "#C49337",
+  accentLight: "#D9A948",
 
   // Typography
-  textDark: "#0F2038",        // crisp dark navy text
-  textMuted: "#526071",       // secondary description text
-  textLight: "#94A3B8",       // subtle labels
+  textDark: "#1A241C",        // crisp dark forest text
+  textMuted: "#556054",       // secondary description text
+  textLight: "#8E9B89",       // subtle labels
 
   // Borders
-  border: "#E2E8F0",
-  borderLight: "#F1F5F9",
+  border: "#E8E2D5",
+  borderLight: "#F2ECE1",
 
   // Feedback
-  success: "#10B981",
-  successBg: "#ECFDF5",
-  danger: "#EF4444",
-  dangerBg: "#FEF2F2",
+  success: "#203626",
+  successBg: "#F0F7F0",
+  danger: "#C0392B",
+  dangerBg: "#FEF5F4",
 
   // Shadows
-  shadowSm: "0 1px 2px 0 rgba(15, 32, 56, 0.05)",
-  shadow: "0 4px 14px -2px rgba(15, 32, 56, 0.06), 0 2px 6px -1px rgba(15, 32, 56, 0.04)",
-  shadowHover: "0 20px 30px -10px rgba(15, 32, 56, 0.1), 0 10px 15px -5px rgba(15, 32, 56, 0.04)",
-  shadowCard: "0 20px 40px -15px rgba(15, 32, 56, 0.08)",
+  shadowSm: "0 1px 2px 0 rgba(22, 38, 26, 0.05)",
+  shadow: "0 4px 14px -2px rgba(22, 38, 26, 0.06), 0 2px 6px -1px rgba(22, 38, 26, 0.04)",
+  shadowHover: "0 20px 30px -10px rgba(22, 38, 26, 0.1), 0 10px 15px -5px rgba(22, 38, 26, 0.04)",
+  shadowCard: "0 20px 40px -15px rgba(22, 38, 26, 0.08)",
 
   // Radii
   radiusPill: "9999px",
@@ -58,11 +58,11 @@ export const theme = {
   radiusXl: "20px",
 
   // Legacy aliases
-  brown: "#00A389",
-  brownDark: "#0F2038",
-  beige: "#E6F7F4",
-  beigeLight: "#F8FAFC",
-  beigeDark: "#A7F3D0",
+  brown: "#C49337",
+  brownDark: "#203626",
+  beige: "#FFF8E6",
+  beigeLight: "#FAF7F2",
+  beigeDark: "#E8D5A0",
 
   transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
 };
