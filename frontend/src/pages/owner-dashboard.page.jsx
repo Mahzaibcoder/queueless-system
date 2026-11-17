@@ -1,4 +1,4 @@
-// OwnerDashboardPage – modernized with Tailwind CSS and TanStack Query
+// OwnerDashboardPage – modernized with Tailwind CSS and TanStack Query v5
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { bookingService, businessService } from "../services/api.service";
@@ -10,90 +10,81 @@ import OwnerBookingsTable from "../components/owner/owner-bookings-table.compone
 import OwnerQuickActions from "../components/owner/owner-quick-actions.component";
 
 export default function OwnerDashboardPage() {
-  const { user } = useAuth(); // kept for potential future auth‑based queries
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   // ---------- Queries ----------
-  // Fetch list of businesses belonging to the logged‑in owner
   const {
     data: businesses = [],
     isLoading: loadingBusinesses,
     isError: errorBusinesses,
     error: errorBusinessesObj,
-  } = useQuery(["myBusinesses"], async () => {
-    const res = await businessService.getMyBusinesses();
-    if (res.error) throw new Error(res.error);
-    return res.data ?? [];
+  } = useQuery({
+    queryKey: ["myBusinesses"],
+    queryFn: async () => {
+      const res = await businessService.getMyBusinesses();
+      if (res.error) throw new Error(res.error);
+      return res.data ?? [];
+    },
   });
 
-  // Selected business – derived from state but defaults to first available
   const [selectedBusinessId, setSelectedBusinessId] = useState("");
   const selectedBusiness = businesses.find((b) => b.id === selectedBusinessId) ?? businesses[0] ?? null;
 
-  // Modal states for destructive actions
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState(null);
   const [cancelReason, setCancelReason] = useState("");
 
-  // Fetch bookings for the selected business (enabled only when a business exists)
   const {
     data: bookings = [],
     isLoading: loadingBookings,
     isError: errorBookings,
     error: errorBookingsObj,
-  } = useQuery(
-    ["bookings", selectedBusiness?.id],
-    async () => {
+  } = useQuery({
+    queryKey: ["bookings", selectedBusiness?.id],
+    queryFn: async () => {
       const res = await bookingService.getByBusiness(selectedBusiness.id);
       if (res.error) throw new Error(res.error);
       return res.data ?? [];
     },
-    { enabled: !!selectedBusiness?.id }
-  );
+    enabled: !!selectedBusiness?.id,
+  });
 
   // ---------- Mutations ----------
-  // Delete a business
-  const deleteBusinessMutation = useMutation(
-    async (bizId) => {
+  const deleteBusinessMutation = useMutation({
+    mutationFn: async (bizId) => {
       const res = await businessService.delete(bizId);
       if (res.error) throw new Error(res.error);
       return res;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["myBusinesses"]);
-        // Reset selected business after deletion – will be refreshed by the myBusinesses query
-        setSelectedBusinessId("");
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myBusinesses"] });
+      setSelectedBusinessId("");
+    },
+  });
 
-  // Cancel a booking
-  const cancelBookingMutation = useMutation(
-    async ({ id, reason }) => {
+  const cancelBookingMutation = useMutation({
+    mutationFn: async ({ id, reason }) => {
       await bookingService.cancel(id, reason);
       return { id, reason };
     },
-    {
-      // Optimistic update for immediate UI feedback
-      onMutate: async ({ id, reason }) => {
-        await queryClient.cancelQueries(["bookings", selectedBusiness?.id]);
-        const previous = queryClient.getQueryData(["bookings", selectedBusiness?.id]);
-        queryClient.setQueryData(["bookings", selectedBusiness?.id], (old) =>
-          (old ?? []).map((b) => (b.id === id ? { ...b, status: "cancelled", cancelReason: reason } : b))
-        );
-        return { previous };
-      },
-      onError: (_err, _variables, context) => {
-        if (context?.previous) {
-          queryClient.setQueryData(["bookings", selectedBusiness?.id], context.previous);
-        }
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries(["bookings", selectedBusiness?.id]);
-      },
-    }
-  );
+    onMutate: async ({ id, reason }) => {
+      await queryClient.cancelQueries({ queryKey: ["bookings", selectedBusiness?.id] });
+      const previous = queryClient.getQueryData(["bookings", selectedBusiness?.id]);
+      queryClient.setQueryData(["bookings", selectedBusiness?.id], (old) =>
+        (old ?? []).map((b) => (b.id === id ? { ...b, status: "cancelled", cancelReason: reason } : b))
+      );
+      return { previous };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["bookings", selectedBusiness?.id], context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings", selectedBusiness?.id] });
+    },
+  });
 
   // ---------- Handlers ----------
   const handleDelete = () => {
@@ -141,7 +132,7 @@ export default function OwnerDashboardPage() {
   const totalThisWeek = upcoming.length;
   const totalRevenue = upcoming.reduce((sum, b) => sum + (b.price || 0), 0);
 
-  // ---------- Loading / Error states ----------
+  // Loading state
   if (loadingBusinesses || loadingBookings) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] bg-[#FAF7F2]">
@@ -150,6 +141,7 @@ export default function OwnerDashboardPage() {
     );
   }
 
+  // Error state
   if (errorBusinesses || errorBookings) {
     const errMsg = (errorBusinessesObj?.message ?? errorBookingsObj?.message) ?? "Failed to load data";
     return (
@@ -159,8 +151,24 @@ export default function OwnerDashboardPage() {
     );
   }
 
+  // No businesses state
+  if (!loadingBusinesses && businesses.length === 0) {
+    return (
+      <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 bg-[#FAF7F2] min-h-[85vh] flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-black text-[#16261A] mb-4">You have no businesses yet</h2>
+          <p className="text-sm text-[#556054] mb-6">Create a business to start managing appointments and queues.</p>
+          <a href="/create-business" className="inline-flex items-center gap-2 bg-[#203626] hover:bg-[#16261A] text-[#FAF7F2] text-sm font-bold px-6 py-2 rounded-full transition-all">
+            Add Business
+            <span className="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+          </a>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 bg-[#FAF7F2] min-h-[85vh]">
+    <section className="pt-2 pb-10 sm:pt-4 sm:pb-14 px-4 sm:px-6 lg:px-8 bg-[#FAF7F2] min-h-[85vh]">
       <div className="w-full max-w-7xl mx-auto">
         {/* SECTION 1: Header Banner */}
         <OwnerHeaderBanner
@@ -197,7 +205,7 @@ export default function OwnerDashboardPage() {
         confirmText="Delete Business"
         cancelText="Cancel"
         variant="danger"
-        isLoading={deleteBusinessMutation.isLoading}
+        isLoading={deleteBusinessMutation.isPending}
         onConfirm={confirmDeleteBusiness}
         onClose={() => setShowDeleteModal(false)}
       />
@@ -210,7 +218,7 @@ export default function OwnerDashboardPage() {
         confirmText="Cancel Appointment"
         cancelText="Keep Appointment"
         variant="danger"
-        isLoading={cancelBookingMutation.isLoading}
+        isLoading={cancelBookingMutation.isPending}
         onConfirm={confirmCancelBooking}
         onClose={() => setBookingToCancel(null)}
       >
